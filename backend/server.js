@@ -1,0 +1,32 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use('/api/auth', require('./src/routes/authRoutes'));
+app.use('/api/users', require('./src/routes/userRoutes'));
+app.use('/api/doctors', require('./src/routes/doctorRoutes'));
+app.use('/api/reports', require('./src/routes/testReportRoutes'));
+app.use('/api/prescriptions', require('./src/routes/prescriptionRoutes'));
+app.use('/api/appointments', require('./src/routes/appointmentRoutes'));
+
+// Database Connection
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/healthcare')
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.log('MongoDB connection error:', err));
+
+app.get('/', (req, res) => {
+    res.send('Healthcare API is running');
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
