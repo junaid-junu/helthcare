@@ -19,7 +19,7 @@ app.use('/api/prescriptions', require('./src/routes/prescriptionRoutes'));
 app.use('/api/appointments', require('./src/routes/appointmentRoutes'));
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/healthcare')
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log('MongoDB connection error:', err));
 
