@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Box, AppBar, Toolbar, IconButton, Typography, Avatar, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, ListItemButton, useTheme, useMediaQuery } from '@mui/material';
+import { Box, Paper, AppBar, Toolbar, IconButton, Typography, Avatar, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, ListItemButton, useTheme, useMediaQuery } from '@mui/material';
 import { Activity, Bell, LogOut, Menu as MenuIcon, LayoutDashboard, Users, FileText, Pill } from 'lucide-react';
 import { AuthContext } from '../store/AuthContext';
 
