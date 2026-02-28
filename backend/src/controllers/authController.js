@@ -15,13 +15,21 @@ exports.registerPatient = async (req, res) => {
         if (userExists) return res.status(400).json({ message: 'User already exists' });
 
         const user = await User.create({ name, email, password, age, height, weight, bloodGroup });
-        res.status(201).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            token: generateToken(user._id, user.role),
-        });
+        const token = generateToken(user._id, user.role);
+
+        res.status(201)
+            .cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+            })
+            .json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -34,13 +42,21 @@ exports.registerDoctor = async (req, res) => {
         if (doctorExists) return res.status(400).json({ message: 'Doctor already exists' });
 
         const doctor = await Doctor.create({ name, email, password, specialization, clinicAddress });
-        res.status(201).json({
-            _id: doctor._id,
-            name: doctor.name,
-            email: doctor.email,
-            role: doctor.role,
-            token: generateToken(doctor._id, doctor.role),
-        });
+        const token = generateToken(doctor._id, doctor.role);
+
+        res.status(201)
+            .cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+            })
+            .json({
+                _id: doctor._id,
+                name: doctor.name,
+                email: doctor.email,
+                role: doctor.role,
+            });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -64,15 +80,29 @@ exports.login = async (req, res) => {
         const isMatch = await user.matchPassword(password);
         if (!isMatch) return res.status(401).json({ message: 'Invalid email or password' });
 
-        res.json({
+        const token = generateToken(user._id, user.role);
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+        }).json({
             _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
             ...(isDoctor && { specialization: user.specialization }),
-            token: generateToken(user._id, user.role),
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};
+
+exports.logout = (req, res) => {
+    res.cookie('token', '', {
+        httpOnly: true,
+        expires: new Date(0),
+    });
+    res.status(200).json({ message: 'Logged out successfully' });
 };

@@ -23,17 +23,21 @@ export const AuthProvider = ({ children }) => {
             }
             setUser(data);
             localStorage.setItem('doctorInfo', JSON.stringify(data));
-            api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
             return data;
         } catch (error) {
             throw error.response?.data?.message || error.message || 'Login failed';
         }
     };
 
-    const logout = () => {
-        setUser(null);
-        localStorage.removeItem('doctorInfo');
-        delete api.defaults.headers.common['Authorization'];
+    const logout = async () => {
+        try {
+            await api.post('/auth/logout');
+        } catch (error) {
+            console.error('Logout failed:', error);
+        } finally {
+            setUser(null);
+            localStorage.removeItem('doctorInfo');
+        }
     };
 
     return (

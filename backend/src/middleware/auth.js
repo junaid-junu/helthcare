@@ -2,8 +2,11 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Doctor = require('../models/Doctor');
 
-// Helper to get token from header
+// Helper to get token from header or cookie
 const getToken = (req) => {
+    if (req.cookies && req.cookies.token) {
+        return req.cookies.token;
+    }
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         return req.headers.authorization.split(' ')[1];
     }
