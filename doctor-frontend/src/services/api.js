@@ -8,4 +8,17 @@ const api = axios.create({
     withCredentials: true,
 });
 
+api.interceptors.request.use((config) => {
+    const userInfo = localStorage.getItem('doctorInfo');
+    if (userInfo) {
+        const parsedInfo = JSON.parse(userInfo);
+        if (parsedInfo.token) {
+            config.headers.set('Authorization', `Bearer ${parsedInfo.token}`);
+        }
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
+
 export default api;

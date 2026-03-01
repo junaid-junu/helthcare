@@ -29,6 +29,7 @@ exports.registerPatient = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                token: token,
             });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -56,6 +57,7 @@ exports.registerDoctor = async (req, res) => {
                 name: doctor.name,
                 email: doctor.email,
                 role: doctor.role,
+                token: token,
             });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -92,6 +94,7 @@ exports.login = async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            token: token,
             ...(isDoctor && { specialization: user.specialization }),
         });
     } catch (error) {

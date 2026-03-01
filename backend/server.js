@@ -11,10 +11,13 @@ const PORT = process.env.PORT || 5000;
 app.use(cors({
   origin: [
     "https://helthcare-wl96.vercel.app",
-    "https://helthcare-one.vercel.app"
+    "https://helthcare-one.vercel.app",
+    'http://localhost:3000',
+    'http://localhost:3001'
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
 app.use(cookieParser());
@@ -29,13 +32,13 @@ app.use('/api/appointments', require('./src/routes/appointmentRoutes'));
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.log('MongoDB connection error:', err));
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log('MongoDB connection error:', err));
 
 app.get('/', (req, res) => {
-    res.send('Healthcare API is running');
+  res.send('Healthcare API is running');
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
